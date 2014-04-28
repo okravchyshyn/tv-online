@@ -82,7 +82,7 @@ width: "100%",
 
 function f_ukraina() {
   embed_flash_player();
-  var html = get_http_page("http://127.0.0.1:8080/?channel=http://kanalukraina.tv/online/");
+  var html = get_http_page("http://" + location.host +"/?channel=http://kanalukraina.tv/online/");
   var patt1=new RegExp("http://kanalukraina.tv/index.m3u8\\?token=[a-f0-9]*", "i");
   var url = patt1.exec(html);
 
@@ -93,7 +93,7 @@ function f_ukraina() {
 
 function tvx_provider(url) {
 
-  var html = get_http_page("http://127.0.0.1:8080/?channel=" + url );
+  var html = get_http_page("http://" + location.host + "/?channel=" + url );
   if( html != null ) {
     var em = search_element(html, "video-block");
     var embed = "<div id=\"video-block\"> " + em.innerHTML + " </div>";

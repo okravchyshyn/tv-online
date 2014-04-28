@@ -6,7 +6,7 @@ import os
 import urlparse
 import httplib
 
-fileName =  './player.html'
+fileName =  './player2.html'
 
 #Create custom HTTPRequestHandler class
 class KodeFunHTTPRequestHandler(BaseHTTPRequestHandler):
