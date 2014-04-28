@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<body>
+<script>
+text="<bookstore><book>";
+text=text+"<title>Everyday Italian</title>";
+text=text+"<author>Giada De Laurentiis</author>";
+text=text+"<year>2005</year>";
+text=text+"</book></bookstore>";
+
+
+var txt = "<embed width=\"728\" height=\"556\" bgcolor=\"#000000\" allowfullscreen=\"true\" allowscriptaccess=\"always\" type=\"application/x-shockwave-flash\" src=\"http://player.longtailvideo.com/player5.2.swf?file=tetrtz37?stream=77&type=rtmp&streamer=rtmp://194.0.88.78/mytv/&displayclick=fullscreen&autostart=true\">";
+
+
+if (window.DOMParser)
+  {
+  parser=new DOMParser();
+  xmlDoc=parser.parseFromString(txt,"text/html");
+  var elems = xmlDoc.getElementsByTagName("embed");
+  if (elems.length > 0) {
+  
+     var em = elems[0];
+     //var w = em.getAttribute("width");
+     em.setAttribute("width","100%");
+     em.setAttribute("hieght","100%");
+     var m = em.outerHTML ;
+     document.write("DOM Object " + m + " <br>");
+  }
+
+  }
+
+else // Internet Explorer
+  {
+  xmlDoc=new ActiveXObject("Microsoft.XMLDOM");
+  xmlDoc.async=false;
+  xmlDoc.loadXML(text); 
+  } 
+document.write("XML string is loaded into an XML DOM Object");
+
+</script>
+</body>
+</html>
+

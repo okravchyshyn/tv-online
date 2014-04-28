@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html> 
+<body> 
+<!--
+<script type="text/javascript" src="http://kanalukraina.tv/scripts/jwplayer.js"></script>
+-->
+
+<script type="text/javascript" src="jwplayer/jwplayer.js"></script>
+<script type="text/javascript">jwplayer.key="5aUJ4XX+yoQjzSKgeqoNFXzfKqvkZ5XsNEZRqNu1zDU=";</script>
+
+
+<div id="container" style="height:100%;width:100%;position:fixed;">
+<div id="header" style="background-color:#FFA500;height:10%;">
+<h1 style="margin-bottom:0;">Main Title of Web Page</h1></div>
+
+<div id="menu" style="background-color:#FFD700;height:80%;width:10%;float:left;">
+<button type="button" onclick="f_1plus1()">1+1</button>
+</div>
+
+<div id="player_id" style="background-color:#EEEEEE;height:80%;width:80%;float:left;">
+   <object id="player_id_1" bgcolor="#000000" 
+        type="application/x-shockwave-flash" height="100%" width="100%">
+      <param value="true" name="allowfullscreen">
+      <param value="always" name="allowscriptaccess">
+      <param value="true" name="seamlesstabbing">
+      <param value="opaque" name="wmode">
+   </object>
+</div>
+
+<script type="text/javascript">
+function f_1plus1() {
+  var url = "http://stream1115.tsn.ua:1935/streamlive/189931/playlist.m3u8"
+  play(url);
+};
+
+
+function play(url) {
+
+    jwplayer("player_id_1").setup({
+      'file': url,
+'autostart':'true',
+'allowfullscreen':'true',
+'stretching':'fill',
+height: "100%",
+width: "100%",
+    });
+};
+
+</script>
+
+<div id="footer" style="background-color:#FFA500;clear:both;text-align:center;height:8%">
+Copyright © W3Schools.com</div
+
+</div>
+
+
+
+</body> 
+</html>
+
