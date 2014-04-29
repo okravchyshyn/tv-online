@@ -91,20 +91,46 @@ function f_ukraina() {
 };
 
 
+
+
 function tvx_provider(url) {
 
   var html = get_http_page("http://" + location.host + "/?channel=" + url );
   if( html != null ) {
     var em = search_element(html, "video-block");
-    var embed = "<div id=\"video-block\"> " + em.innerHTML + " </div>";
-    var doc = document.getElementById("player_id");
-    doc.innerHTML = embed; 
+    
+    var patt1=new RegExp("rtmp://.*mytv/", "i"); 
+    if( patt1.test(em.innerHTML)==true ) {
+       var rtmpUrl =  patt1.exec(em.innerHTML);
+       //var patt2=new RegExp("file=.*\?", "i"); 
+       var patt2=new RegExp("file=[a-z0-9]*", "i"); 
+       var filePath =  patt2.exec(em.innerHTML); 
+       var patt3=new RegExp("[^//?]*", "i"); 
+       filePath = patt3.exec(filePath);
+       var patt4 = /file=/g;
+       var tmp = patt4.exec(filePath);
+       var channel = filePath.toString().substring(patt4.lastIndex,99)
+       play(rtmpUrl+channel);
+
+    } else {      
+       var embed = "<div id=\"video-block\"> " + em.innerHTML + " </div>";
+       var doc = document.getElementById("player_id");
+       doc.innerHTML = embed; 
+    }
    }
 }
 
 
 function f_2plus2() {
   tvx_provider("http://tvx.com.ua/tv/kanal-2-plus-2/");
+  /*
+    jwplayer("player_id_1").setup({
+      'file': "rtmp://194.0.88.77/mytv/2plus2",
+    image: "/assets/myVideo.jpg",
+    height: 360,
+    width: 640
+});
+  */
 };
 
 function f_5kanal() {
@@ -112,7 +138,7 @@ function f_5kanal() {
 }
 
 function f_ictv() {
-  tvx_provider("http://tvx.com.ua/tv/5-kanal/");
+  tvx_provider("http://tvx.com.ua/tv/ictv/");
 }
 
 function f_tet() {
