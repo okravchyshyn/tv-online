@@ -4,7 +4,7 @@ from BaseHTTPServer import BaseHTTPRequestHandler, HTTPServer
 import os
 import urlparse
 import httplib
-
+import re
 from HTMLParser import HTMLParser
 from htmlentitydefs import name2codepoint
 
@@ -13,6 +13,7 @@ class SearchTagData(HTMLParser):
     
     searchedUrl = None
     foundTag = False
+    foundText = None
 
     def __init__(self, searchedTag):
 	self.searchedTag = searchedTag;
@@ -30,11 +31,12 @@ class SearchTagData(HTMLParser):
                         print txt
                         return
         if self.foundTag == True:
-            txt = self.get_starttag_text()
-            print txt
+            self.foundText = self.get_starttag_text()
+            print self.foundText
+            
             for attr in attrs:
                 print attr
-                self.foundTag = False
+            self.foundTag = False
  
     def handle_endtag(self, tag):
         print "End tag  :", tag
@@ -67,9 +69,22 @@ def httpGetRequest(url):
     return data
 
 def getStreamUrl(pageUrl,searchedElement):
+    url = None
     html = httpGetRequest(pageUrl)
     parser = SearchTagData(searchedElement)
-    parser.feed(html);
+    parser.feed(html)
+    text = parser.foundText
+    if text is not None:
+        print text
+        try:
+            m = re.search('streamer=(.*\/)&', text)
+            path = m.group(1)
+            m = re.search('file=(.*)\&type', text)
+            f = m.group(1)
+            url = path + f
+        except:
+            url = None
+    return url
   
     pass
 
