@@ -7,6 +7,7 @@ import httplib
 import re
 from HTMLParser import HTMLParser
 from htmlentitydefs import name2codepoint
+from lxml import etree
 
 
 class SearchTagData(HTMLParser):
@@ -83,17 +84,57 @@ def getStreamUrl(pageUrl,searchedElement):
             f = m.group(1)
             url = path + f
         except:
+            print "Error in reg expression:q"
             url = None
     return url
   
     pass
 
+def addChannelToList(rootXml, channelName, url):
+    ch = etree.SubElement(rootXml, "item")
+    title = etree.SubElement(ch, "title")
+    title.text = channelName
+    link = etree.SubElement(ch, "link")
+    link.text = url
+    pass
+
 def getPlayList():
+    root = etree.Element("channels")
+
+    addChannelToList(root, "1+1", "http://stream1115.tsn.ua:1935/streamlive/189931/playlist.m3u8")
+    
     url = getStreamUrl("http://tvx.com.ua/tv/kanal-2-plus-2/", "video-block")
-    print url
+    if url is not None:
+        addChannelToList(root, "2+2", url)
+
+    url = getStreamUrl("http://tvx.com.ua/tv/ictv/", "video-block")
+    if url is not None:
+        addChannelToList(root, "ictv", url)
+    
+    url = getStreamUrl("http://tvx.com.ua/tv/5-kanal/", "video-block")
+    if url is not None:
+        addChannelToList(root, "5 kanal", url)
+ 
+    url = getStreamUrl("http://tvx.com.ua/tv/novy-kanal-online/", "video-block")
+    if url is not None:
+        addChannelToList(root, "novyy", url)
+    
+    url = getStreamUrl("http://tvx.com.ua/tv/kanal-stb/", "video-block")
+    if url is not None:
+        addChannelToList(root, "stb", url)
+
+    #url = getStreamUrl("http://tvx.com.ua/tv/pervyj-nacionalnyj/", "video-block")
+    #if url is not None:
+    #    addChannelToList(root, "stb", url)
+   
+
+ 
+    print etree.tostring(root)
+    return etree.tostring(root)
 
 
 
 if __name__ == '__main__':
+  
     playList = getPlayList()
 

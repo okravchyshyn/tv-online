@@ -5,6 +5,7 @@ from BaseHTTPServer import BaseHTTPRequestHandler, HTTPServer
 import os
 import urlparse
 import httplib
+import formPlayList as pl
 
 fileName =  './player2.html'
 
@@ -17,6 +18,7 @@ class KodeFunHTTPRequestHandler(BaseHTTPRequestHandler):
         global fileName
         fn = fileName  #file location
         try:
+            print "PATH: ", self.path
             #if self.path.endswith('.html'):
 	    contentType = "text-html" 
 	    if '?' in self.path:
@@ -46,6 +48,16 @@ class KodeFunHTTPRequestHandler(BaseHTTPRequestHandler):
 	   
             if len(self.path) == 0:
 		pass
+            elif self.path == "/channels":
+                pass
+                xml = pl.getPlayList()              
+                contentType = "text-xml"
+                self.send_response(200)
+                self.send_header('Content-type',contentType)
+                self.end_headers()
+                self.wfile.write(xml)
+                print "!!! XML"
+                return 
 	    elif self.path.endswith(".js"): 
 	        fn = self.path[1:]
                 contentType = "application/x-javascript"
