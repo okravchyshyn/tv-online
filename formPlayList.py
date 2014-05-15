@@ -95,7 +95,7 @@ def addChannelToList(rootXml, channelName, url):
     title = etree.SubElement(ch, "title")
     title.text = channelName
     link = etree.SubElement(ch, "link")
-    link.text = url
+    link.text = "\"" + url + "\""
     pass
 
 def getPlayList():

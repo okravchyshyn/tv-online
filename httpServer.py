@@ -42,6 +42,7 @@ class KodeFunHTTPRequestHandler(BaseHTTPRequestHandler):
 
                 	self.send_response(200)
                 	self.send_header('Content-type',contentType)
+                	self.send_header('Access-Control-Allow-Origin','*')
                 	self.end_headers()
                 	self.wfile.write(data)
 			return
