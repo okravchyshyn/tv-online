@@ -6,8 +6,11 @@ import os
 import urlparse
 import httplib
 import formPlayList as pl
+#import logging
+import syslog
 
 fileName =  './player2.html'
+
 
 #Create custom HTTPRequestHandler class
 class KodeFunHTTPRequestHandler(BaseHTTPRequestHandler):
@@ -15,30 +18,27 @@ class KodeFunHTTPRequestHandler(BaseHTTPRequestHandler):
     #handle GET command
     def do_GET(self):
 	print 'get request'
+        syslog.syslog(syslog.LOG_INFO, 'Get request')
         global fileName
         fn = fileName  #file location
         try:
             print "PATH: ", self.path
+            syslog.syslog(syslog.LOG_INFO, 'PATH' + self.path)
             #if self.path.endswith('.html'):
 	    contentType = "text-html" 
 	    if '?' in self.path:
 		url, args = self.path.split('?')
+                syslog.syslog(syslog.LOG_INFO, 'URL&PATH=' + url + ' ' + args)
 		qs = urlparse.parse_qs(args)
-		print url, args
-		print qs
+		#print url, args
+                syslog.syslog(syslog.LOG_INFO, str(qs))
+		#print qs
 		KEYWORD = "channel"
 		if KEYWORD in qs:
-			channel_url = qs[KEYWORD]
-			print channel_url
-			url_container = urlparse.urlparse(channel_url[0])
-			print "url_container =", url_container
-			conn = httplib.HTTPConnection(url_container.netloc)
-			conn.request("GET",url_container.path)
-			res = conn.getresponse()
-			print res.status, res.reason
-			data = res.read()
-			print data
-			conn.close()
+                        syslog.syslog(syslog.LOG_INFO, 'I am here')
+			channel_url = qs[KEYWORD][0]
+                        syslog.syslog(syslog.LOG_INFO, 'channel_url=' + channel_url)
+                        data = pl.httpGetRequest(channel_url)
 
                 	self.send_response(200)
                 	self.send_header('Content-type',contentType)
@@ -46,10 +46,13 @@ class KodeFunHTTPRequestHandler(BaseHTTPRequestHandler):
                 	self.end_headers()
                 	self.wfile.write(data)
 			return
+                else:
+                        syslog.syslog(syslog.LOG_INFO, 'No keyword')
 	   
             if len(self.path) == 0:
 		pass
             elif self.path == "/channels":
+                syslog.syslog(syslog.LOG_INFO, 'Start forming playlist' )
                 pass
                 xml = pl.getPlayList()              
                 contentType = "text-xml"
@@ -58,6 +61,7 @@ class KodeFunHTTPRequestHandler(BaseHTTPRequestHandler):
                 self.end_headers()
                 self.wfile.write(xml)
                 print "!!! XML"
+                syslog.syslog(syslog.LOG_INFO, 'Playlist formed' )
                 return 
 	    elif self.path.endswith(".js"): 
 	        fn = self.path[1:]
@@ -86,6 +90,7 @@ class KodeFunHTTPRequestHandler(BaseHTTPRequestHandler):
                 return
             
         except IOError:
+            syslog.syslog(syslog.LOG_ERR, 'IOError 404 file not found' )
             self.send_error(404, 'file not found')
     
 def run():
@@ -99,6 +104,7 @@ def run():
     httpd.serve_forever()
 
 if __name__ == '__main__':
+    syslog.syslog('Server started')
     global fileName
     print sys.argv
     if len(sys.argv) > 1:
