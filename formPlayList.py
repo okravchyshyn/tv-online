@@ -112,7 +112,7 @@ def addChannelToList(rootXml, channelName, url):
 def getPlayList():
     root = etree.Element("channels")
 
-    addChannelToList(root, "1+1", "http://stream1115.tsn.ua:1935/streamlive/189931/playlist.m3u8")
+    addChannelToList(root, "1+1", "http://stream1115.tsn.ua:1935/streamlive/189931/playlist.m3u8|COMPONENT=HLS")
     
     url = getStreamUrl("http://tvx.com.ua/tv/kanal-2-plus-2/", "video-block")
     if url is not None:
