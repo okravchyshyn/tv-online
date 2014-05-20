@@ -91,11 +91,11 @@ def getStreamUrl(pageUrl,searchedElement):
             m = re.search('file=(.*)\&type', text)
             f = m.group(1)
             url = path + f
+            syslog.syslog(syslog.LOG_INFO, 'url=' + url )
         except:
             print "Error in reg expression:q"
             syslog.syslog(syslog.LOG_ERR, 'Err in reg expression' )
             url = None
-    syslog.syslog(syslog.LOG_INFO, 'url=' + url )
     return url
   
     pass
