@@ -10,6 +10,46 @@ from htmlentitydefs import name2codepoint
 from lxml import etree
 import syslog
 
+
+class EmbedHTMLParser(HTMLParser):
+    src = None
+    flashvars = None
+
+    def handle_starttag(self, tag, attrs):
+        syslog.syslog(syslog.LOG_INFO, 'has to be embed tag =' + tag)
+        for attr in attrs:
+            if tag == 'embed' and attr[0] == 'flashvars':
+                 self.flashvars = attr[1]
+                 syslog.syslog(syslog.LOG_INFO, 'flashvars =' + self.flashvars)
+            if tag == 'embed' and attr[0]=='src':
+                 self.src = attr[1]
+                 syslog.syslog(syslog.LOG_INFO, 'src =' + self.src)
+            syslog.syslog(syslog.LOG_INFO, 'attr =' + str(attr))
+
+
+def extractFilePathFromEmbedBlock(embedStr):
+    parser = EmbedHTMLParser()
+    parser.feed(embedStr)
+    if parser.flashvars is None:
+        if parser.src is not None:
+            url, args = parser.src.split('?')
+            syslog.syslog(syslog.LOG_INFO, "split src, url=" + url + " args=" + args)
+            parser.flashvars = args
+        else:
+            return None
+    qs = urlparse.parse_qs(parser.flashvars)
+
+    f = qs['file'][0]
+    s =  qs['streamer'][0]
+    syslog.syslog(syslog.LOG_INFO, 's =' + s + " f=" + f)
+
+    if s[-1] != "/":
+       s = s + '/'
+
+    return s + f
+
+
+
 class SearchTagData(HTMLParser):
     
     searchedUrl = None
@@ -86,15 +126,19 @@ def getStreamUrl(pageUrl,searchedElement):
     if text is not None:
         #print text
         try:
-            m = re.search('streamer=(.*\/)&', text)
-            path = m.group(1)
-            m = re.search('file=(.*)\&type', text)
-            f = m.group(1)
-            url = path + f
+            #m = re.search('streamer=(.*\/)&', text)
+            #path = m.group(1)
+            #m = re.search('file=(.*)\&type', text)
+            #f = m.group(1)
+            #url = path + f
+            url = extractFilePathFromEmbedBlock(text)
+            if url is None:
+                url = "None"
             syslog.syslog(syslog.LOG_INFO, 'url=' + url )
         except:
-            print "Error in reg expression:q"
-            syslog.syslog(syslog.LOG_ERR, 'Err in reg expression' )
+            #print "Error in reg expression:q"
+            #syslog.syslog(syslog.LOG_ERR, 'Err in reg expression' )
+            syslog.syslog(syslog.LOG_ERR, 'Unexpected error' )
             url = None
     return url
   
