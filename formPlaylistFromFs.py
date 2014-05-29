@@ -3,7 +3,7 @@ from HTMLParser import HTMLParser
 from htmlentitydefs import name2codepoint
 from lxml import etree
 import formPlayList as fpl
-
+import re
 
 
 class EmbedHTMLParser(HTMLParser):
@@ -16,6 +16,10 @@ class EmbedHTMLParser(HTMLParser):
         HTMLParser.__init__(self)
         self.parentXmlEl = parentXmlEl
 
+    def getRelResource(self, str):
+        patter = "\{parent_id[^0-9]*(\d{1,10})\}"
+        r = re.search(pattern, str) 
+        
 
     def createFolderTag(self, attrs):
         ch = etree.SubElement(self.parentXmlEl, "item")
