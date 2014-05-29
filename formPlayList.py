@@ -104,7 +104,12 @@ def httpGetRequest(url):
     syslog.syslog(syslog.LOG_INFO, 'url_container=' + url_container.netloc + ' path = ' + url_container.path)
     conn = httplib.HTTPConnection(url_container.netloc)
     syslog.syslog(syslog.LOG_INFO, 'Connecting ...')
-    conn.request("GET",url_container.path)
+    vpath = url_container.path
+    if url_container.query is not None and len(url_container.query) > 0:
+         vpath = vpath + "?" + url_container.query
+    syslog.syslog(syslog.LOG_INFO, 'Request path=' + vpath)
+    #conn.request("GET",url_container.path)
+    conn.request("GET",vpath)
     syslog.syslog(syslog.LOG_INFO, 'Request ...')
     res = conn.getresponse()
     #print res.status, res.reason
